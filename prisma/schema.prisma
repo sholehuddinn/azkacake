@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // disimpan di .env
+}
+
+model Product {
+  id            String   @id @default(uuid())
+  name          String
+  description   String
+  category_id   String
+  sold_count    Int
+  image         String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  category      Category @relation(fields: [category_id], references: [id])
+}
+
+model Category {
+  id       String    @id
+  name     String
+  products Product[]
+}
+
