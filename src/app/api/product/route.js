@@ -18,6 +18,7 @@ export async function POST(req) {
         description: body.description,
         category_id: body.category_id,
         sold_count: body.sold_count,
+        price: body.price,
         image: body.image
       }
     })
