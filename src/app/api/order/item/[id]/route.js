@@ -3,11 +3,11 @@ import db from "@/lib/db";
 export async function GET(_, { params }) {
   const order_id = params.id;
 
-  try {
+  try { 
     const items = await db.OrderItem.findMany({
       where: { order_id },
       include: {
-        product: true, // supaya bisa ambil nama & harga produk
+        product: true,
       },
     });
 

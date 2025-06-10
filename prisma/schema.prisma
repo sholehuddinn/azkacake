@@ -7,19 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id       String   @id @default(uuid())
+  username String   @unique
+  password String
+
+  products Product[]
+}
+
 model Product {
-  id          String   @id @default(uuid())
+  id          String      @id @default(uuid())
   name        String
   description String
   category_id String
   sold_count  Int
   image       String
-  price       Int      @default(0)
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  user_id     String
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
+  price       Int         @default(0)
 
-  category  Category    @relation(fields: [category_id], references: [id])
-  OrderItem OrderItem[]
+  user        User       @relation(fields: [user_id], references: [id])
+  OrderItem   OrderItem[]
+  category    Category    @relation(fields: [category_id], references: [id])
 }
 
 model Category {
@@ -29,39 +39,36 @@ model Category {
 }
 
 model Order {
-  id           String      @id @default(uuid())
-  name         String
-  phone        String
-  address      String
-  status       String
-  event        DateTime
-  created_at   DateTime    @default(now())
-  updated_at   DateTime    @updatedAt
-  items        OrderItem[] 
-
-  payment      Payment?
+  id         String      @id @default(uuid())
+  name       String
+  phone      String
+  address    String
+  created_at DateTime    @default(now())
+  event      DateTime
+  status     String
+  updated_at DateTime    @updatedAt
+  items      OrderItem[]
+  payment    Payment?
 }
 
 model OrderItem {
-  id         String @id @default(uuid())
+  id         String  @id @default(uuid())
   order_id   String
   product_id String
   qty        Int
-
-  order   Order   @relation(fields: [order_id], references: [id])
-  product Product @relation(fields: [product_id], references: [id])
+  order      Order   @relation(fields: [order_id], references: [id])
+  product    Product @relation(fields: [product_id], references: [id])
 }
 
 model Payment {
-  id              String    @id @default(uuid())
-  orderId         String    @unique
+  id              String   @id @default(uuid())
+  orderId         String   @unique
   midtransOrderId String
   status          String
   paymentType     String
   transactionTime DateTime
   grossAmount     Int
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-
-  order Order @relation(fields: [orderId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  order           Order    @relation(fields: [orderId], references: [id])
 }

@@ -1,4 +1,5 @@
 import Image from "next/image";
+// import jwt from "jsonwebtoken"
 
 export default function Home() {
   return (
@@ -11,7 +12,8 @@ export default function Home() {
           width={180}
           height={38}
           priority
-        />
+        /> 
+        {/* {jwt.decode(eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQyYzdkZmE0LTM4ODItNDA4Zi04OTkxLWYyOWIwODI2ODNhNSIsInVzZXJuYW1lIjoiZmFqYXIxMjMiLCJpYXQiOjE3NDk0OTIxNTQsImV4cCI6MTc0OTQ5NTc1NH0.GvKOBGwHEZ7MCWCT0fAEXFlKkdzL10_ZAo413gwAGi0)} */}
         <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2 tracking-[-.01em]">
             Get started by editing{" "}
@@ -57,7 +59,7 @@ export default function Home() {
           href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
           target="_blank"
           rel="noopener noreferrer"
-        >
+        > 
           <Image
             aria-hidden
             src="/file.svg"
