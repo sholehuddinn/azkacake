@@ -7,9 +7,9 @@ export async function POST(req) {
 
     // Inisialisasi Midtrans snap client
     const snap = new MidtransClient.Snap({
-      isProduction: false, // ganti true kalau production
-      serverKey: process.env.MIDTRANS_SERVER_KEY,
-      clientKey: process.env.MIDTRANS_CLIENT_KEY,
+      isProduction: false, 
+      serverKey: process.env.SECRET,
+      clientKey: process.env.NEXT_PUBLI_CLIENT,
     });
 
     const parameter = {

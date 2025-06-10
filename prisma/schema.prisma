@@ -8,10 +8,9 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(uuid())
-  username String   @unique
+  id       String    @id @default(uuid())
+  username String    @unique
   password String
-
   products Product[]
 }
 
@@ -22,14 +21,13 @@ model Product {
   category_id String
   sold_count  Int
   image       String
-  user_id     String
   created_at  DateTime    @default(now())
   updated_at  DateTime    @updatedAt
   price       Int         @default(0)
-
-  user        User       @relation(fields: [user_id], references: [id])
+  user_id     String
   OrderItem   OrderItem[]
   category    Category    @relation(fields: [category_id], references: [id])
+  user        User        @relation(fields: [user_id], references: [id])
 }
 
 model Category {
