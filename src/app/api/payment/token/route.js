@@ -3,11 +3,11 @@ import MidtransClient from 'midtrans-client';
 export async function POST(req) {
   try {
     const body = await req.json();
-    // Contoh body: { order_id, gross_amount, customer_details }
+    //  body: { order_id, gross_amount, customer_details }
 
     // Inisialisasi Midtrans snap client
     const snap = new MidtransClient.Snap({
-      isProduction: false, 
+      isProduction: true, 
       serverKey: process.env.SECRET,
       clientKey: process.env.NEXT_PUBLI_CLIENT,
     });
