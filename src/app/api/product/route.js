@@ -18,7 +18,11 @@ export async function GET() {
         },
       }
     });
-    return NextResponse.json(products);
+    return NextResponse.json({
+      message: "data product di ambil",
+      status: 200,
+      data: products
+    });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

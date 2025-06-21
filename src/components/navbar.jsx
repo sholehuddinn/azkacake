@@ -50,7 +50,7 @@ export default function Navbar() {
             className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-blue-700"
           >
             <ShoppingCart size={20} />
-            <span>Keranjang</span>
+            <Link href={'/cart'}>Keranjang</Link>
           </motion.button>
 
           {/* Mobile Menu Toggle */}

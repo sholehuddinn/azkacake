@@ -21,7 +21,6 @@ function verifyToken(req) {
 
 export async function GET(req, { params }) {
   try {
-    verifyToken(req);
 
     const product = await db.product.findUnique({
       where: { id: params.id },
@@ -35,7 +34,10 @@ export async function GET(req, { params }) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    return NextResponse.json(product);
+    return NextResponse.json({
+      message : "data berhasil di ambil",
+      data : product
+    });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }

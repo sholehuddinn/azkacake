@@ -1,43 +1,49 @@
-'use client';
+"use client";
 
-import { useParams } from 'next/navigation';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import Link from 'next/link';
-
-// Simulasi data produk berdasarkan ID
-const produkList = [
-  {
-    id: '1',
-    nama: 'Brownies Lumer',
-    gambar: '/brownies.jpg',
-    deskripsi: 'Brownies lembut dengan cokelat lumer di dalamnya. Cocok untuk semua usia dan acara!',
-    harga: '25.000',
-  },
-  {
-    id: '2',
-    nama: 'Lapis Legit',
-    gambar: '/lapis-legit.jpg',
-    deskripsi: 'Kue lapis legit dengan aroma rempah klasik dan tekstur padat.',
-    harga: '40.000',
-  },
-  {
-    id: '3',
-    nama: 'Cheese Cake',
-    gambar: '/cheese-cake.jpg',
-    deskripsi: 'Cheesecake lembut dengan topping stroberi segar.',
-    harga: '35.000',
-  },
-];
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function ProdukDetailPage() {
   const { id } = useParams();
-  const produk = produkList.find((item) => item.id === id);
+  const [produk, setProduk] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  if (!produk) {
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`/api/product/${id}`);
+        if (!res.ok) {
+          throw new Error("Produk tidak ditemukan");
+        }
+        const data = await res.json();
+        setProduk(data.data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center text-gray-600 text-lg">
+        Memuat data produk...
+      </main>
+    );
+  }
+
+  if (error || !produk) {
     return (
       <main className="min-h-screen flex items-center justify-center text-red-600 text-xl">
-        Produk dengan ID {id} tidak ditemukan.
+        {error || `Produk dengan ID ${id} tidak ditemukan.`}
       </main>
     );
   }
@@ -51,9 +57,9 @@ export default function ProdukDetailPage() {
         transition={{ duration: 0.5 }}
       >
         <div className="md:w-1/2 mb-6 md:mb-0">
-          <Image
-            src={produk.gambar}
-            alt={produk.nama}
+          <img
+            src={produk.image}
+            alt={produk.name}
             width={500}
             height={400}
             className="rounded-lg w-full object-cover h-64 md:h-auto"
@@ -61,19 +67,27 @@ export default function ProdukDetailPage() {
         </div>
 
         <div className="md:w-1/2 space-y-4">
-          <h1 className="text-3xl font-bold text-pink-700">{produk.nama}</h1>
-          <p className="text-gray-700">{produk.deskripsi}</p>
-          <p className="text-xl font-semibold text-pink-600">Rp {produk.harga}</p>
+          <h1 className="text-3xl font-bold text-pink-700">{produk.name}</h1>
+          <p className="text-gray-700">{produk.description}</p>
+          <p className="text-sm text-gray-500">
+            Kategori: {produk.category?.name}
+          </p>
+          <p className="text-sm text-black my-2">
+            Terjual : <span className="text-red-500">{produk.sold_count}</span>
+          </p>
+          <p className="text-xl font-semibold text-pink-600">
+            Rp {produk.price.toLocaleString()}
+          </p>
 
           <a
             href={`https://wa.me/6281234567890?text=Halo%20saya%20ingin%20memesan%20${encodeURIComponent(
-              produk.nama
+              produk.name
             )}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-pink-600 hover:bg-pink-700 text-white font-semibold px-6 py-3 rounded-lg mt-4 transition"
           >
-            Pesan Sekarang
+            Tambah Keranjang
           </a>
 
           <Link
