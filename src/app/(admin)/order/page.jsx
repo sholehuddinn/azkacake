@@ -1,26 +1,69 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { Plus, Edit, Trash2, ShoppingCart, Phone, MapPin, DollarSign, Clock } from 'lucide-react';
 
 export default function ListOrder() {
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchOrders = async () => {
-    const res = await fetch('/api/order');
-    const data = await res.json();
-    setOrders(data);
+    setLoading(true);
+    try {
+      const res = await fetch('/api/order');
+      if (!res.ok) throw new Error('Failed to fetch orders');
+      const data = await res.json();
+      setOrders(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async (id) => {
-    const confirm = window.confirm('Yakin ingin menghapus order ini?');
+    const confirm = window.confirm('Yakin ingin menghapus pesanan kue ini?');
     if (!confirm) return;
 
-    await fetch(`/api/orders/${id}`, {
-      method: 'DELETE',
-    });
+    try {
+      await fetch(`/api/orders/${id}`, {
+        method: 'DELETE',
+      });
+      fetchOrders();
+    } catch (err) {
+      console.error('Error deleting order:', err);
+    }
+  };
 
-    fetchOrders();
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'processing':
+        return 'bg-blue-100 text-blue-800';
+      case 'completed':
+        return 'bg-green-100 text-green-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'pending':
+        return 'Menunggu';
+      case 'processing':
+        return 'Diproses';
+      case 'completed':
+        return 'Selesai';
+      case 'cancelled':
+        return 'Dibatalkan';
+      default:
+        return status || 'Unknown';
+    }
   };
 
   useEffect(() => {
@@ -28,39 +71,173 @@ export default function ListOrder() {
   }, []);
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Daftar Order</h1>
-      <Link href="/orders/create" className="bg-blue-600 text-white px-4 py-2 rounded">
-        + Tambah Order
-      </Link>
+    <main className="min-h-screen bg-blue-50 py-8 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <ShoppingCart className="h-8 w-8" />
+                <div>
+                  <h1 className="text-3xl font-bold">Daftar Pesanan</h1>
+                  <p className="text-blue-100 mt-1">Kelola semua pesanan kue Azka Cake 🧁</p>
+                </div>
+              </div>
+              <Link 
+                href="/orders/create" 
+                className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition transform hover:scale-105 flex items-center gap-2"
+              >
+                <Plus className="h-5 w-5" />
+                Tambah Pesanan
+              </Link>
+            </div>
+          </div>
+        </div>
 
-      <table className="w-full mt-4 border text-sm">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border px-2 py-1">Nama</th>
-            <th className="border px-2 py-1">Telepon</th>
-            <th className="border px-2 py-1">Alamat</th>
-            <th className="border px-2 py-1">Jumlah</th>
-            <th className="border px-2 py-1">Status</th>
-            <th className="border px-2 py-1">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((o) => (
-            <tr key={o.id}>
-              <td className="border px-2 py-1">{o.name}</td>
-              <td className="border px-2 py-1">{o.phone}</td>
-              <td className="border px-2 py-1">{o.address}</td>
-              <td className="border px-2 py-1">{o.gross_amount}</td>
-              <td className="border px-2 py-1">{o.status}</td>
-              <td className="border px-2 py-1">
-                <Link href={`/orders/edit/${o.id}`} className="text-blue-600 mr-2">Edit</Link>
-                <button onClick={() => handleDelete(o.id)} className="text-red-600">Hapus</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        {/* Content */}
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          {loading ? (
+            <div className="p-8 text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-2 text-gray-600">Memuat pesanan...</p>
+            </div>
+          ) : error ? (
+            <div className="p-8 text-center">
+              <div className="text-red-600 bg-red-50 p-4 rounded-lg">
+                <p className="font-semibold">Error: {error}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-blue-50 text-blue-700">
+                  <tr>
+                    <th className="px-4 py-4 text-left font-semibold">
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4" />
+                        Pelanggan
+                      </div>
+                    </th>
+                    <th className="px-4 py-4 text-left font-semibold">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        Alamat
+                      </div>
+                    </th>
+                    <th className="px-4 py-4 text-left font-semibold">
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="h-4 w-4" />
+                        Total
+                      </div>
+                    </th>
+                    <th className="px-4 py-4 text-left font-semibold">
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        Status
+                      </div>
+                    </th>
+                    <th className="px-4 py-4 text-left font-semibold">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-blue-100">
+                  {orders.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="p-8 text-center text-gray-500">
+                        <div className="flex flex-col items-center gap-3">
+                          <ShoppingCart className="h-12 w-12 text-gray-300" />
+                          <p className="text-lg font-medium">Belum ada pesanan</p>
+                          <p className="text-sm">Pesanan pertama akan muncul di sini</p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    orders.map((o) => (
+                      <tr key={o.id} className="hover:bg-blue-50 transition">
+                        <td className="px-4 py-4">
+                          <div>
+                            <div className="font-medium text-gray-900">{o.name}</div>
+                            <div className="text-blue-600 text-sm flex items-center gap-1">
+                              <Phone className="h-3 w-3" />
+                              {o.phone}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-4">
+                          <div className="text-gray-600 max-w-xs truncate">
+                            {o.address}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4">
+                          <div className="font-semibold text-blue-600">
+                            Rp {o.gross_amount?.toLocaleString()}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4">
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(o.status)}`}>
+                            {getStatusText(o.status)}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4">
+                          <div className="flex gap-2">
+                            <Link 
+                              href={`/orders/edit/${o.id}`} 
+                              className="text-blue-600 hover:bg-blue-100 p-2 rounded-lg transition flex items-center gap-1"
+                              title="Edit pesanan"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Link>
+                            <button 
+                              onClick={() => handleDelete(o.id)} 
+                              className="text-red-600 hover:bg-red-100 p-2 rounded-lg transition flex items-center gap-1"
+                              title="Hapus pesanan"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* Stats */}
+        {orders.length > 0 && (
+          <div className="mt-6 bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-blue-700 mb-4">Ringkasan Pesanan</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">
+                  {orders.length}
+                </div>
+                <div className="text-sm text-gray-600">Total Pesanan</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-yellow-600">
+                  {orders.filter(o => o.status?.toLowerCase() === 'pending').length}
+                </div>
+                <div className="text-sm text-gray-600">Menunggu</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">
+                  {orders.filter(o => o.status?.toLowerCase() === 'processing').length}
+                </div>
+                <div className="text-sm text-gray-600">Diproses</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">
+                  {orders.filter(o => o.status?.toLowerCase() === 'completed').length}
+                </div>
+                <div className="text-sm text-gray-600">Selesai</div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </main>
   );
 }

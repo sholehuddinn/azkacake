@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -25,11 +24,11 @@ export default function RegisterPage() {
       const result = await res.json();
 
       if (!res.ok) {
-        Swal.fire('Gagal', 'Registrasi gagal', 'error')
+        Swal.fire('Gagal', 'Registrasi gagal', 'error');
         return;
       }
 
-      Swal.fire('Success', "Login Berhasil", 'success')
+      Swal.fire('Berhasil', "Registrasi berhasil! Silakan login", 'success');
       router.push("/login");
     } catch (err) {
       setError("Terjadi kesalahan saat registrasi.");
@@ -37,13 +36,19 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-pink-200 to-pink-300 px-4">
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 px-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8 space-y-6">
-        <h1 className="text-3xl font-bold text-center text-pink-600">
-          Daftar Akun
-        </h1>
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-blue-600 mb-2">
+            Daftar Akun
+          </h1>
+          <p className="text-blue-500 text-sm font-medium">
+            Azka Cake 🧁
+          </p>
+        </div>
+        
         <p className="text-center text-gray-500 text-sm">
-          Isi data untuk membuat akun baru
+          Isi data untuk membuat akun baru dan mulai pesan kue impian Anda
         </p>
 
         {error && <p className="text-red-600 text-center text-sm">{error}</p>}
@@ -54,20 +59,22 @@ export default function RegisterPage() {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+            className="w-full border border-gray-300 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
             required
           />
+          
           <input
             type="password"
             placeholder="Kata Sandi"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+            className="w-full border border-gray-300 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
             required
           />
+          
           <button
             type="submit"
-            className="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 rounded-lg transition"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition transform hover:scale-105 shadow-md"
           >
             Daftar Sekarang
           </button>
@@ -77,11 +84,17 @@ export default function RegisterPage() {
           Sudah punya akun?{" "}
           <Link
             href="/login"
-            className="text-pink-600 hover:underline font-semibold"
+            className="text-blue-600 hover:underline font-semibold"
           >
             Masuk di sini
           </Link>
         </p>
+
+        <div className="text-center pt-4 border-t border-gray-200">
+          <p className="text-xs text-gray-400">
+            Dengan mendaftar, Anda setuju dengan syarat dan ketentuan kami
+          </p>
+        </div>
       </div>
     </main>
   );
