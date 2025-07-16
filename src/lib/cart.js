@@ -3,7 +3,7 @@ const CART_KEY = "cart_items";
 // Ambil isi keranjang
 export function getCart() {
   if (typeof window === "undefined") return [];
-  const data = localStorage.getItem(CART_KEY);
+  const data = localStorage.getItem("cart_items");
   return data ? JSON.parse(data) : [];
 }
 

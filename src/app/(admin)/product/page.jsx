@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Plus, Edit, Trash2, Package } from "lucide-react";
+import Swal from "sweetalert2";
+import Link from "next/link";
 
 export default function ProductCrudPage() {
   const [products, setProducts] = useState([]);
@@ -44,8 +46,8 @@ export default function ProductCrudPage() {
     e.preventDefault();
     setLoading(true);
     
-    const method = editId ? "PUT" : "POST";
-    const url = editId ? `/api/product/${editId}` : "/api/product";
+    const method = "PUT";
+    const url = `/api/product/${editId}`;
 
     try {
       const res = await fetch(url, {
@@ -73,10 +75,12 @@ export default function ProductCrudPage() {
         });
         setEditId(null);
         fetchProducts();
-      }
+      } 
     } catch (error) {
-      console.error("Error saving product:", error);
+      Swal.fire("Error", error.message, "error")
     } finally {
+      Swal.fire("Success", "Data berhasil di ubah", "success")
+      fetchProducts();
       setLoading(false);
     }
   };
@@ -93,24 +97,42 @@ export default function ProductCrudPage() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Yakin ingin menghapus produk kue ini?")) return;
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
 
-    setLoading(true);
-    try {
-      await fetch(`/api/product/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    if (result.isConfirmed) {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/product/${id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      fetchProducts();
-    } catch (error) {
-      console.error("Error deleting product:", error);
-    } finally {
-      setLoading(false);
+        if (res.ok) {
+          await Swal.fire("Deleted!", "Produk berhasil dihapus.", "success");
+          fetchProducts();
+        } else {
+          const err = await res.json();
+          Swal.fire("Gagal", err?.error || "Gagal menghapus produk", "error");
+        }
+      } catch (error) {
+        console.error("Error deleting product:", error);
+        Swal.fire("Error", "Terjadi kesalahan saat menghapus produk.", "error");
+      } finally {
+        setLoading(false);
+      }
     }
   };
+
 
   const handleCancel = () => {
     setForm({
@@ -142,7 +164,11 @@ export default function ProductCrudPage() {
           <div className="bg-blue-50 rounded-lg p-6 mb-8">
             <h2 className="text-xl font-semibold text-blue-700 mb-4 flex items-center gap-2">
               <Plus className="h-5 w-5" />
-              {editId ? "Edit Produk Kue" : "Tambah Produk Kue Baru"}
+                <Link
+                  href="/product/add"
+                >
+                  Tambah Produk Kue Baru
+                </Link>
             </h2>
             
             <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4">
@@ -194,7 +220,7 @@ export default function ProductCrudPage() {
                   disabled={loading}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  {loading ? "Menyimpan..." : editId ? "Update Produk" : "Tambah Produk"}
+                  Edit
                 </button>
                 {editId && (
                   <button

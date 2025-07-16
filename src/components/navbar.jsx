@@ -41,6 +41,12 @@ export default function Navbar() {
             >
               Kontak
             </Link>
+            <Link
+              href="/checkout"
+              className="text-blue-700 hover:text-blue-900 font-medium"
+            >
+              Cek Status pesanan
+            </Link>
           </nav>
 
           {/* Cart Button */}

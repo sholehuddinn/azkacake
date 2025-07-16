@@ -11,6 +11,7 @@ export default function CartPage() {
   const [cart, setCart] = useState([]);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("")
   const [address, setAddress] = useState("");
   const [event, setEvent] = useState("");
   const [loading, setLoading] = useState(true);
@@ -29,22 +30,23 @@ export default function CartPage() {
     }
   };
 
+
   useEffect(() => {
     const loadCart = async () => {
       try {
-        const cartItems = getCart(); // [{ id, quantity }]
+        const cartItems = getCart();
         const products = await fetchAllProducts();
 
-        const merged = cartItems
-          .map(({ id, quantity }) => {
-            const detail = products.find((p) => p.id === id);
-            return detail ? { ...detail, qty: quantity } : null;
-          })
-          .filter(Boolean); // hilangkan null/nullish item
+        const merged = cartItems.map(({ id, quantity }) => {
+          // Jika produk belum ada, jangan error — skip saja
+          const detail = (products || []).find((p) => p.id === id);
+          return detail ? { ...detail, qty: quantity } : null;
+        }).filter(Boolean); // Hanya tampilkan produk yang berhasil ditemukan
 
         setCart(merged);
       } catch (error) {
         console.error("Error loading cart:", error);
+        setCart([]); // fallback kalau gagal total
       } finally {
         setLoading(false);
       }
@@ -52,6 +54,7 @@ export default function CartPage() {
 
     loadCart();
   }, []);
+
 
   const updateQty = (id, newQty) => {
     if (newQty < 1) return;
@@ -102,12 +105,24 @@ export default function CartPage() {
     setSubmitting(true);
 
     try {
+      // Tampilkan loading saat proses kirim order
+      Swal.fire({
+        title: "Memproses Order...",
+        text: "Mohon tunggu sebentar",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
       const orderData = {
         name,
         phone,
         address,
+        email,
         status: "menunggu",
-        event, // format dari datetime-local input
+        event: new Date(event),
         items: cart.map((item) => ({
           product_id: item.id,
           qty: item.qty,
@@ -124,14 +139,16 @@ export default function CartPage() {
 
       if (!res.ok) throw new Error(result.error || "Gagal membuat order");
 
-      await Swal.fire({
+      // Tutup loading lalu tampilkan success
+      Swal.fire({
         title: "Berhasil!",
         text: "Order berhasil dibuat",
         icon: "success",
         confirmButtonColor: "#2563eb"
+      }).then(() => {
+        router.push(`/checkout/${result.order.id}`);
       });
 
-      router.push(`/checkout/${result.id}`);
     } catch (err) {
       Swal.fire({
         title: "Checkout Gagal",
@@ -143,6 +160,7 @@ export default function CartPage() {
       setSubmitting(false);
     }
   };
+
 
   if (loading) {
     return (
@@ -312,11 +330,24 @@ export default function CartPage() {
                       Nomor WhatsApp
                     </label>
                     <input
-                      type="tel"
+                      type="number"
                       placeholder="08xxxxxxxxxx"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 fo cus:border-transparent transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email (untuk konfirmasi pesanan)
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="azkacake@gmail.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 fo cus:border-transparent transition-colors"
                     />
                   </div>
 
@@ -326,7 +357,7 @@ export default function CartPage() {
                     </label>
                     <input
                       type="text"
-                      placeholder="Jl. Contoh No. 123, Kota"
+                      placeholder="alamat lengkap"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"

@@ -99,6 +99,15 @@ export default function OrderDetail() {
     }
   }, [id]);
 
+  const [eventTime, setEventTime] = useState("");
+
+  useEffect(() => {
+    if (order?.event) {
+      setEventTime(new Date(order.event).toLocaleString());
+    }
+  }, [order]);
+
+
   if (loading) {
     return (
       <main className="min-h-screen bg-blue-50 py-8 px-4">
@@ -213,7 +222,7 @@ export default function OrderDetail() {
                 Item Pesanan
               </h2>
               <div className="space-y-4">
-                {order.items.map((item) => (
+                {Array.isArray(order.items) && order.items.map((item) => (
                   <div key={item.id} className="border border-blue-100 rounded-lg p-4">
                     <div className="flex gap-4">
                       <div className="flex-shrink-0">
@@ -265,7 +274,7 @@ export default function OrderDetail() {
                   <label className="text-sm font-medium text-gray-500">Tanggal Acara</label>
                   <p className="text-gray-900 font-medium flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-blue-600" />
-                    {formatEventDate(order.event)}
+                    <span className="font-medium">Waktu Acara:</span> {eventTime || "..."}
                   </p>
                 </div>
                 <div>

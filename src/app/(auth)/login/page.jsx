@@ -35,7 +35,7 @@ export default function LoginPage() {
       }
       
       Swal.fire("Berhasil", "Login berhasil", "success");
-      router.push("/admin");
+      router.push("/product");
     } catch (err) {
       setError("Terjadi kesalahan saat login.");
     }

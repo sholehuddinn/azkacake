@@ -44,25 +44,24 @@ export async function GET() {
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { name, phone, address, items, status, event } = body;
+    const { name, phone, address, email, items, status, event } = body;
 
-    // Validasi input
     if (!name) return NextResponse.json({ error: "Missing name" }, { status: 400 });
     if (!phone) return NextResponse.json({ error: "Missing phone" }, { status: 400 });
     if (!address) return NextResponse.json({ error: "Missing address" }, { status: 400 });
-    if (!Array.isArray(items) || items.length == 0) {
+    if (!Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: "Items must be an array with at least 1 item" }, { status: 400 });
     }
 
-
-    // Buat order
+    // 1. Buat order
     const order = await db.Order.create({
       data: {
         name,
         phone,
         address,
+        email,
         status: status || "pending",
-        event,
+        event: new Date(event),
         items: {
           create: items.map((item) => ({
             product_id: item.product_id,
@@ -71,11 +70,15 @@ export async function POST(req) {
         },
       },
       include: {
-        items: true,
+        items: {
+          include: {
+            product: true, // ✅ wajib agar product.name tersedia
+          },
+        },
       },
     });
 
-    // Update sold_count per produk dari relasi item
+    // 2. Update stok terjual
     for (const item of order.items) {
       await db.Product.update({
         where: { id: item.product_id },
@@ -87,11 +90,16 @@ export async function POST(req) {
       });
     }
 
+    // 3. Kirim email
+
     return NextResponse.json({ success: true, order }, { status: 201 });
+
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 })
+    console.error("Order creation error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
 
 export async function PATCH(req) {
   try {

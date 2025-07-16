@@ -81,3 +81,23 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }
 }
+
+// PATCH dipilih untuk update sebagian data
+export async function PATCH(req, { params }) {
+  try {
+    const body = await req.json();
+    const id = params.id;
+
+    const updated = await db.product.update({
+      where: { id },
+      data: {
+        sold_count: body.sold_count,       // kamu bisa sesuaikan field-nya
+      },
+    });
+
+    return NextResponse.json(updated);
+  } catch (error) {
+    console.error("Update failed:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
