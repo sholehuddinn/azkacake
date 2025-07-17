@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-export default function ActionButtons({ orderId, grossAmount, customer }) {
+export default function ActionButtons({ orderId, grossAmount, customer, status, email }) {
   const [snapReady, setSnapReady] = useState(false);
 
   // Load Snap script
@@ -68,8 +68,6 @@ export default function ActionButtons({ orderId, grossAmount, customer }) {
               vaNumbers: result.va_numbers || null,
             }),
           });
-
-          window.location.href = `/status?order_id=${result.order_id}`;
         },
 
         onPending: async (result) => {
@@ -130,19 +128,27 @@ export default function ActionButtons({ orderId, grossAmount, customer }) {
         Kembali ke Beranda
       </Link>
 
-      <button
-        onClick={handlePay}
-        disabled={!snapReady}
-        className={`inline-flex items-center px-8 py-3 font-semibold rounded-xl transition-all duration-200 shadow-lg transform hover:-translate-y-1
-          ${
-            snapReady
-              ? "bg-green-600 text-white hover:bg-green-700 hover:shadow-xl"
-              : "bg-gray-400 text-white cursor-not-allowed"
-          }
-        `}
-      >
-        💰 {snapReady ? "Bayar Sekarang" : "Memuat..."}
-      </button>
+      {status !== "dibayar" && (
+        <button
+          onClick={handlePay}
+          disabled={!snapReady}
+          className={`inline-flex items-center px-8 py-3 font-semibold rounded-xl transition-all duration-200 shadow-lg transform hover:-translate-y-1
+            ${
+              snapReady
+                ? "bg-green-600 text-white hover:bg-green-700 hover:shadow-xl"
+                : "bg-gray-400 text-white cursor-not-allowed"
+            }
+          `}
+        >
+          💰 {snapReady ? "Bayar Sekarang" : "Memuat..."}
+        </button>
+      )}
+
+      {email && (
+        <div className="mt-4 text-sm text-gray-600">
+          🔔 Email Pembeli: <strong>{email}</strong>
+        </div>
+      )}
     </motion.div>
   );
 }

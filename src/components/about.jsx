@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Users, Star } from "lucide-react";
 
-const about = () => {
+const About = () => {
   return (
     <section id="about" className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,4 +51,4 @@ const about = () => {
   );
 };
 
-export default about;
+export default About;

@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Phone, MapPin, Clock } from "lucide-react";
 
-const contacts = () => {
+const Contacts = () => {
   return (
     <section
       id="contact"
@@ -61,4 +61,4 @@ const contacts = () => {
   );
 };
 
-export default contacts;
+export default Contacts;

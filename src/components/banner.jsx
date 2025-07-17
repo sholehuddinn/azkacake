@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const banner = () => {
+const Banner = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const bannerSlides = [
@@ -103,4 +103,4 @@ const banner = () => {
   );
 };
 
-export default banner;
+export default Banner;

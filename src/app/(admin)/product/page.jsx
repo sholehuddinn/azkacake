@@ -272,7 +272,7 @@ export default function ProductCrudPage() {
                         <tr key={p.id} className="hover:bg-blue-50 transition">
                           <td className="p-4">
                             <img
-                              src={p.image}
+                              src={`/image/${p.image}`}
                               alt={p.name}
                               className="w-16 h-16 object-cover rounded-lg border-2 border-blue-200"
                             />

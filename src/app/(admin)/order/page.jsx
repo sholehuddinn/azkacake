@@ -73,27 +73,6 @@ export default function ListOrder() {
   return (
     <main className="min-h-screen bg-blue-50 py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <ShoppingCart className="h-8 w-8" />
-                <div>
-                  <h1 className="text-3xl font-bold">Daftar Pesanan</h1>
-                  <p className="text-blue-100 mt-1">Kelola semua pesanan kue Azka Cake 🧁</p>
-                </div>
-              </div>
-              <Link 
-                href="/orders/create" 
-                className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition transform hover:scale-105 flex items-center gap-2"
-              >
-                <Plus className="h-5 w-5" />
-                Tambah Pesanan
-              </Link>
-            </div>
-          </div>
-        </div>
 
         {/* Content */}
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -181,7 +160,7 @@ export default function ListOrder() {
                         <td className="px-4 py-4">
                           <div className="flex gap-2">
                             <Link 
-                              href={`/orders/edit/${o.id}`} 
+                              href={`/order/${o.id}`} 
                               className="text-blue-600 hover:bg-blue-100 p-2 rounded-lg transition flex items-center gap-1"
                               title="Edit pesanan"
                             >
@@ -205,38 +184,7 @@ export default function ListOrder() {
           )}
         </div>
 
-        {/* Stats */}
-        {orders.length > 0 && (
-          <div className="mt-6 bg-white rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-semibold text-blue-700 mb-4">Ringkasan Pesanan</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">
-                  {orders.length}
-                </div>
-                <div className="text-sm text-gray-600">Total Pesanan</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-600">
-                  {orders.filter(o => o.status?.toLowerCase() === 'pending').length}
-                </div>
-                <div className="text-sm text-gray-600">Menunggu</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">
-                  {orders.filter(o => o.status?.toLowerCase() === 'processing').length}
-                </div>
-                <div className="text-sm text-gray-600">Diproses</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">
-                  {orders.filter(o => o.status?.toLowerCase() === 'completed').length}
-                </div>
-                <div className="text-sm text-gray-600">Selesai</div>
-              </div>
-            </div>
-          </div>
-        )}
+        
       </div>
     </main>
   );

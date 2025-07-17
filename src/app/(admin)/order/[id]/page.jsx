@@ -157,7 +157,7 @@ export default function OrderDetail() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Link 
-                  href="/orders" 
+                  href="/order" 
                   className="hover:bg-blue-500 p-2 rounded-lg transition"
                 >
                   <ArrowLeft className="h-6 w-6" />
@@ -172,13 +172,6 @@ export default function OrderDetail() {
                 <span className={`px-4 py-2 rounded-full text-sm font-medium border ${getStatusColor(order.status)}`}>
                   {getStatusText(order.status)}
                 </span>
-                <Link 
-                  href={`/orders/edit/${order.id}`} 
-                  className="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold hover:bg-blue-50 transition flex items-center gap-2"
-                >
-                  <Edit className="h-4 w-4" />
-                  Edit
-                </Link>
               </div>
             </div>
           </div>
@@ -227,7 +220,7 @@ export default function OrderDetail() {
                     <div className="flex gap-4">
                       <div className="flex-shrink-0">
                         <img 
-                          src={item.product.image} 
+                          src={`/image/${item.product.image}`} 
                           alt={item.product.name}
                           className="w-16 h-16 object-cover rounded-lg"
                         />

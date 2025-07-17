@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const video = () => {
+const Video = () => {
   return (
     <section className="bg-gradient-to-r from-blue-800 to-indigo-900 py-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -49,4 +49,4 @@ const video = () => {
   );
 };
 
-export default video;
+export default Video;

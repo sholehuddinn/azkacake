@@ -248,7 +248,7 @@ export default function CartPage() {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
                     <img
-                      src={item.image}
+                      src={`/image/${item.image}`}
                       alt={item.name}
                       className="w-20 h-20 object-cover rounded-lg"
                     />

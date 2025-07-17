@@ -1,28 +1,22 @@
 "use client";
-
 import React from "react";
 import Contacts from "@/components/contacts";
+import Video from "@/components/video";
+import Product from "@/components/product"; 
 import About from "@/components/about";
-import Product from "@/components/product";
 import Banner from "@/components/banner";
-import VideoIntro from "@/components/video";
 
 const AzkaCakeLanding = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Video Introduction Section */}
-      <VideoIntro />
+      <Video />
 
-      {/* Banner Slider */}
       <Banner />
 
-      {/* Products Section */}
       <Product />
 
-      {/* About Section */}
       <About />
 
-      {/* Contact Section */}
       <Contacts />
     </div>
   );

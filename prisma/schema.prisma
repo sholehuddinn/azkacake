@@ -61,7 +61,7 @@ model OrderItem {
 
 model Payment {
   id              String   @id @default(uuid())
-  orderId         String   
+  orderId         String   @unique
   midtransOrderId String
   status          String
   paymentType     String
