@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET(_, { params }) {
   try {
     const order = await db.order.findUnique({
-      where: { id: params.id },
+      where: { id: params?.id },
       include: {
         items: {
           include: {

@@ -50,14 +50,16 @@ export default function Navbar() {
           </nav>
 
           {/* Cart Button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <div
             className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-blue-700"
           >
+
             <ShoppingCart size={20} />
-            <Link href={'/cart'}>Keranjang</Link>
-          </motion.button>
+            <Link 
+              
+              href={'/cart'}
+              >Keranjang</Link>
+              </div>
 
           {/* Mobile Menu Toggle */}
           <div className="md:hidden ml-4">

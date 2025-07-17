@@ -1,4 +1,5 @@
 import db from "@/lib/db"
+import { sendEmail } from "@/lib/email";
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -91,6 +92,7 @@ export async function POST(req) {
     }
 
     // 3. Kirim email
+    await sendEmail(order);
 
     return NextResponse.json({ success: true, order }, { status: 201 });
 

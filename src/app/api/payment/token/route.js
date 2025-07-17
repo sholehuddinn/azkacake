@@ -1,16 +1,16 @@
 import MidtransClient from 'midtrans-client';
 
+const snap = new MidtransClient.Snap({
+  isProduction: false, 
+  serverKey: process.env.MIDTRANS_SERVER_KEY,
+  clientKey: process.env.MIDTRANS_CLIENT_KEY,
+
+});
 export async function POST(req) {
   try {
     const body = await req.json();
     //  body: { order_id, gross_amount, customer_details }
 
-    // Inisialisasi Midtrans snap client
-    const snap = new MidtransClient.Snap({
-      isProduction: true, 
-      serverKey: process.env.SECRET,
-      clientKey: process.env.NEXT_PUBLI_CLIENT,
-    });
 
     const parameter = {
       transaction_details: {
@@ -18,9 +18,6 @@ export async function POST(req) {
         gross_amount: body.gross_amount,
       },
       customer_details: body.customer_details,
-      credit_card: {
-        secure: true,
-      },
     };
 
     const snapToken = await snap.createTransaction(parameter);

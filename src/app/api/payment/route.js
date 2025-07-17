@@ -1,19 +1,19 @@
 import db from "@/lib/db";
+import { paymentSuccess } from "@/lib/email";
 
 export async function POST(req) {
   try {
-    const { orderId, midtransOrderId, status, paymentType, transactionTime } =
+    const { orderId, midtransOrderId, status, paymentType, transactionTime, vaNumbers } =
       await req.json();
 
     if (!orderId || !midtransOrderId || !status) {
       return new Response(
-        JSON.stringify({
-          error: "orderId, midtransOrderId, dan status wajib diisi",
-        }),
+        JSON.stringify({ error: "orderId, midtransOrderId, dan status wajib diisi" }),
         { status: 400 }
       );
     }
 
+    // Cek apakah payment sudah ada
     const existingPayment = await db.payment.findUnique({
       where: { orderId },
     });
@@ -25,33 +25,28 @@ export async function POST(req) {
       );
     }
 
-    // Ambil order beserta items dan product
-    const order = await db.Order.findUnique({
+    // Ambil data order + items
+    const order = await db.order.findUnique({
       where: { id: orderId },
       include: {
         items: {
-          include: {
-            product: true, // supaya bisa akses harga
-          },
+          include: { product: true },
         },
       },
     });
 
-    // console.log("Order Items:", order.items);
-
-
     if (!order) {
-      return new Response(JSON.stringify({ error: "Order tidak ditemukan" }), {
-        status: 404,
-      });
+      return new Response(
+        JSON.stringify({ error: "Order tidak ditemukan" }),
+        { status: 404 }
+      );
     }
 
-    // Hitung total harga
     const grossAmount = order.items.reduce((total, item) => {
       return total + item.qty * item.product.price;
     }, 0);
 
-    // Simpan data payment
+    // Simpan ke tabel payment
     const payment = await db.payment.create({
       data: {
         orderId,
@@ -63,13 +58,36 @@ export async function POST(req) {
       },
     });
 
-    return new Response(JSON.stringify({ success: true, data: payment }), {
-      status: 201,
-      headers: { "Content-Type": "application/json" },
+    // Update status order
+    const updatedOrder = await db.order.update({
+      where: { id: orderId },
+      data: { status: "dibayar" },
     });
+
+    // Kirim email bukti pembayaran
+    try {
+      if (order.email) {
+        await paymentSuccess(order.email, order, {
+          transaction_time: transactionTime,
+          payment_type: paymentType,
+          transaction_id: midtransOrderId,
+          va_numbers: vaNumbers || null,
+        });
+      } else {
+        console.warn("⚠️ order.email tidak tersedia. Email tidak dikirim.");
+      }
+    } catch (err) {
+      console.error("❌ Gagal mengirim email:", err.message);
+    }
+
+    return new Response(
+      JSON.stringify({ success: true, payment, updatedOrder }),
+      { status: 201, headers: { "Content-Type": "application/json" } }
+    );
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-    });
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }
