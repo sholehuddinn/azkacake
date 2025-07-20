@@ -383,10 +383,6 @@ export default function CartPage() {
                     <span className="text-gray-600">Subtotal</span>
                     <span className="font-semibold">Rp {total.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-gray-600">Biaya Pengiriman</span>
-                    <span className="font-semibold text-green-600">Gratis</span>
-                  </div>
                   <div className="flex justify-between items-center text-xl font-bold border-t pt-4">
                     <span>Total</span>
                     <span className="text-blue-600">Rp {total.toLocaleString()}</span>

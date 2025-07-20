@@ -42,7 +42,7 @@ export default function CreateProductPage() {
     formData.append('price', form.price);
     formData.append('category_id', form.category_id);
     formData.append('description', form.description);
-    formData.append('image', imageFile); // append file
+    formData.append('image', imageFile);
 
     try {
       const res = await fetch('/api/product', {
@@ -73,22 +73,88 @@ export default function CreateProductPage() {
   };
 
   return (
-    <main className="min-h-screen bg-blue-50 py-10 px-4">
-      <div className="max-w-xl mx-auto bg-white shadow-md rounded-xl p-6">
-        <h1 className="text-2xl font-bold text-blue-700 mb-6">Tambah Produk Kue</h1>
+    <main className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 py-10 px-4">
+      <div className="max-w-xl mx-auto bg-white shadow-lg rounded-2xl p-8 space-y-6">
+        <h1 className="text-3xl font-extrabold text-blue-800 mb-4 text-center">Tambah Produk Kue 🍰</h1>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input name="name" value={form.name} onChange={handleChange} placeholder="Nama Kue" required className="w-full border px-4 py-2 rounded-lg" />
-          <input name="price" type="number" value={form.price} onChange={handleChange} placeholder="Harga (Rp)" required className="w-full border px-4 py-2 rounded-lg" />
-          <input name="category_id" value={form.category_id} onChange={handleChange} placeholder="ID Kategori" required className="w-full border px-4 py-2 rounded-lg" />
-          <input type="file" onChange={handleFileChange} accept="image/*" required className="w-full border px-4 py-2 rounded-lg" />
-          <textarea name="description" value={form.description} onChange={handleChange} placeholder="Deskripsi" rows={3} required className="w-full border px-4 py-2 rounded-lg" />
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block font-semibold text-gray-700 mb-1">Nama Kue</label>
+            <input
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Contoh: Brownies Lumer"
+              required
+              className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none transition"
+            />
+          </div>
 
-          <div className="flex gap-2">
-            <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg disabled:opacity-50">
+          <div>
+            <label className="block font-semibold text-gray-700 mb-1">Harga</label>
+            <input
+              name="price"
+              type="number"
+              value={form.price}
+              onChange={handleChange}
+              placeholder="Contoh: 25000"
+              required
+              className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none transition"
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold text-gray-700 mb-1">Kategori</label>
+            <select
+              name="category_id"
+              value={form.category_id}
+              onChange={handleChange}
+              required
+              className="w-full border px-4 py-2 rounded-lg bg-white focus:ring-2 focus:ring-blue-400 outline-none transition"
+            >
+              <option value="">-- Pilih Kategori --</option>
+              <option value="1">Cake</option>
+              <option value="2">Jajan</option>
+              <option value="3">Brownies</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block font-semibold text-gray-700 mb-1">Gambar</label>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              accept="image/*"
+              required
+              className="w-full border px-4 py-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold text-gray-700 mb-1">Deskripsi</label>
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              placeholder="Ceritakan tentang produk ini..."
+              rows={4}
+              required
+              className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none transition"
+            />
+          </div>
+
+          <div className="flex gap-3 justify-between pt-4">
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition disabled:opacity-50"
+            >
               {loading ? 'Menyimpan...' : 'Simpan Produk'}
             </button>
-            <Link href="/product" className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg">
+            <Link
+              href="/product"
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-6 rounded-lg transition"
+            >
               Kembali
             </Link>
           </div>
